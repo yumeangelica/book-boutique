@@ -67,7 +67,7 @@ class BookController
 
     $book = Book::getById($id);
     if ($book) {
-      require_once __DIR__ . '/../View/edit_book.php';
+      require_once __DIR__ . '/../View/edit_book.html';
     } else {
       header('Location: /books?error=notfound');
       exit;
