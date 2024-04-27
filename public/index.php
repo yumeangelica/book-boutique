@@ -48,7 +48,7 @@ switch ($request) {
       $controller = new \Controller\AuthController();
       $controller->register();
     } else {
-      require __DIR__ . '/../src/View/register.php';
+      require __DIR__ . '/../src/View/register.html';
     }
     break;
   case '/dashboard':
@@ -67,7 +67,7 @@ switch ($request) {
     $controller->index();
     break;
   case '/books/new':
-    require __DIR__ . '/../src/View/add_book.php';
+    require __DIR__ . '/../src/View/add_book.html';
     break;
   case '/books/add':
     $controller = new \Controller\BookController();
