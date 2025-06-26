@@ -1,0 +1,37 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: book-boutique-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-demo_root_password}
+      MYSQL_DATABASE: ${DB_NAME:-book_boutique_db}
+      MYSQL_USER: ${DB_USER:-demo_user}
+      MYSQL_PASSWORD: ${DB_PASS:-demo_password}
+    ports:
+      - '3306:3306'
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./sql:/docker-entrypoint-initdb.d
+    networks:
+      - book-boutique-network
+
+  php:
+    build: .
+    container_name: book-boutique-php
+    restart: always
+    ports:
+      - '8080:80'
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - book-boutique-network
+
+volumes:
+  mysql_data:
+
+networks:
+  book-boutique-network:
+    driver: bridge
