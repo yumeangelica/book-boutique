@@ -7,7 +7,7 @@ class User
   public static function verifyCredentials($username, $password)
   {
     $conn = Database::getConnection();
-    $stmt = $conn->prepare("SELECT id, username, password_hash FROM Users WHERE username = ?");
+    $stmt = $conn->prepare("SELECT id, username, password_hash FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -23,11 +23,43 @@ class User
   public static function create($username, $hashed_password)
   {
     $conn = Database::getConnection();
-    $stmt = $conn->prepare("INSERT INTO Users (username, password_hash) VALUES (?, ?)");
+    $stmt = $conn->prepare("INSERT INTO users (username, password_hash) VALUES (?, ?)");
     $stmt->bind_param("ss", $username, $hashed_password);
 
     $result = $stmt->execute();
 
+    $stmt->close();
+    return $result;
+  }
+
+  public static function usernameExists($username)
+  {
+    $conn = Database::getConnection();
+    $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $exists = $result->num_rows > 0;
+    $stmt->close();
+    return $exists;
+  }
+
+  public static function updatePassword($userId, $newHashedPassword)
+  {
+    $conn = Database::getConnection();
+    $stmt = $conn->prepare("UPDATE users SET password_hash = ? WHERE id = ?");
+    $stmt->bind_param("si", $newHashedPassword, $userId);
+    $result = $stmt->execute();
+    $stmt->close();
+    return $result;
+  }
+
+  public static function deleteById($userId)
+  {
+    $conn = Database::getConnection();
+    $stmt = $conn->prepare("DELETE FROM users WHERE id = ?");
+    $stmt->bind_param("i", $userId);
+    $result = $stmt->execute();
     $stmt->close();
     return $result;
   }
