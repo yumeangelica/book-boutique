@@ -1,9 +1,34 @@
+# Dependencies
 /vendor/
-/.env
-.env
 
+# Environment variables
+.env
+.env.local
+.env.production
+# Keep .env.example for reference
+
+# OS generated files
 .DS_Store
 **/.DS_Store
 Thumbs.db
 
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+temp/
+
+# Docker volumes (if local)
+mysql_data/
+
+# Composer
 composer.lock
