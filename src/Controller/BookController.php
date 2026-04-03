@@ -62,7 +62,8 @@ class BookController
       exit;
     }
 
-    $result = Book::deleteById($id);
+    $userId = $_SESSION['user_id'];
+    $result = Book::deleteById($id, $userId);
     if ($result) {
       header('Location: /books');
     } else {
@@ -95,12 +96,16 @@ class BookController
     }
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      $title = $_POST['title'] ?? null;
-      $author = $_POST['author'] ?? null;
-      $isbn = $_POST['isbn'] ?? null;
+      $title = trim($_POST['title'] ?? '');
+      $author = trim($_POST['author'] ?? '');
+      $isbn = trim($_POST['isbn'] ?? '');
       $publishedYear = $_POST['published_year'] ?? null;
 
-      if ($title && $author && $isbn && $publishedYear) {
+      // Only title and author are required; isbn and publishedYear are optional
+      $isbn = $isbn === '' ? null : $isbn;
+      $publishedYear = ($publishedYear === '' || $publishedYear === null) ? null : $publishedYear;
+
+      if ($title && $author) {
         $result = Book::updateById($id, $title, $author, $isbn, $publishedYear);
         if ($result) {
           header('Location: /books');

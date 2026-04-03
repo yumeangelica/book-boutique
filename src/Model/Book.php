@@ -40,11 +40,16 @@ class Book
     return $books;
   }
 
-  public static function deleteById($id)
+  public static function deleteById($id, $userId = null)
   {
     $conn = Database::getConnection();
-    $stmt = $conn->prepare("DELETE FROM books WHERE id = ?");
-    $stmt->bind_param("i", $id);
+    if ($userId !== null) {
+      $stmt = $conn->prepare("DELETE FROM books WHERE id = ? AND user_id = ?");
+      $stmt->bind_param("ii", $id, $userId);
+    } else {
+      $stmt = $conn->prepare("DELETE FROM books WHERE id = ?");
+      $stmt->bind_param("i", $id);
+    }
     $result = $stmt->execute();
     $stmt->close();
     return $result;
