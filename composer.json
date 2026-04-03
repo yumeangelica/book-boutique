@@ -1,7 +1,6 @@
 {
   "name": "yumeangelica/book-boutique",
   "description": "A modern PHP web application for personal book collection management",
-  "version": "1.0.0",
   "type": "project",
   "license": "MIT",
   "authors": [
@@ -12,14 +11,13 @@
   ],
   "autoload": {
     "psr-4": {
-      "": "src/"
+      "Controller\\": "src/Controller/",
+      "Model\\": "src/Model/"
     }
   },
   "require": {
     "php": ">=8.1",
     "vlucas/phpdotenv": "^5.6"
   },
-  "require-dev": {
-    "php": ">=8.1"
-  }
+  "require-dev": {}
 }
