@@ -26,8 +26,9 @@ COPY . /var/www/html/
 # Install dependencies (used when no volume mount overrides)
 RUN composer install --no-dev --optimize-autoloader
 
-# Set proper permissions
-RUN chown -R www-data:www-data /var/www/html && \
-    chmod -R 755 /var/www/html
+# Set minimal required permissions
+RUN mkdir -p /var/www/html/vendor && \
+    chown -R www-data:www-data /var/www/html/vendor && \
+    chmod -R 755 /var/www/html/public /var/www/html/src /var/www/html/config
 
 ENTRYPOINT ["docker-entrypoint.sh"]
