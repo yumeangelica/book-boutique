@@ -24,7 +24,7 @@ A modern PHP web application for personal book collection management with user a
 
 ### User Experience
 
-- Modern glassmorphism design with muted pink theme
+- Modern, soft card-based design with muted pink theme
 - Fully responsive design (mobile-friendly)
 - Interactive user interface with Font Awesome icons
 - Real-time client-side validation
@@ -110,15 +110,14 @@ Database features automatic cascade deletion - when a user account is deleted, a
 - Password strength validation (frontend + backend)
 - **Current password verification** for password changes and account deletion
 - Session management with proper cleanup
-- CSRF protection through form methods
 - Input sanitization and validation
 - Secure password hashing and verification
 - **Prevention of password reuse** during password changes
 
 ## Technology Stack
 
-- **Backend**: PHP 8.2, MySQL 8.0
-- **Frontend**: Bootstrap 5.3.7, Font Awesome, vanilla JavaScript
+- **Backend**: PHP 8.3, MySQL 8.4
+- **Frontend**: Custom CSS, Font Awesome 6.7.2, vanilla JavaScript
 - **Infrastructure**: Docker, Apache
 - **Configuration**: Environment variables (.env)
 - **Dependencies**: Composer (vlucas/phpdotenv)
@@ -253,7 +252,7 @@ DB_ROOT_PASSWORD=another_very_secure_password
 - **Interactive Elements**: Hover effects and smooth transitions throughout
 - **Consistent Theming**: Muted pink color palette across all pages
 - **Component Architecture**: Reusable footer component with dynamic year
-- **Glassmorphism Elements**: Modern translucent containers with blur effects on main content areas
+- **Card-Based Layout**: Soft, elevated containers for clear content separation
 
 ## Credits
 
