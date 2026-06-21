@@ -29,6 +29,3 @@ temp/
 
 # Docker volumes (if local)
 mysql_data/
-
-# Composer
-composer.lock

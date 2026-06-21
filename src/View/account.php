@@ -25,10 +25,10 @@ $success = isset($success) ? $success : '';
       </div>
 
       <?php if ($error): ?>
-        <div class="alert alert--danger"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
+        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
       <?php if ($success): ?>
-        <div class="alert alert--success"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
+        <div class="alert alert--success" role="status"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($success) ?></div>
       <?php endif; ?>
 
       <div class="info-box">
@@ -44,20 +44,21 @@ $success = isset($success) ? $success : '';
       </div>
 
       <div class="actions actions--stack">
-        <button class="btn btn--primary btn--full" onclick="toggleSection('pwSection')">
+        <button type="button" class="btn btn--primary btn--full" onclick="toggleSection('pwSection', this)" aria-controls="pwSection" aria-expanded="false">
           <i class="fas fa-key"></i> Change Password
         </button>
 
         <!-- Password Change -->
-        <div id="pwSection" class="collapse-section collapse-section--neutral">
+        <div id="pwSection" class="collapse-section collapse-section--neutral" aria-hidden="true">
           <form method="POST" action="/change-password" id="pwForm">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
             <div class="form-group">
               <label class="form-label" for="current_password">Current Password</label>
-              <input type="password" id="current_password" name="current_password" class="form-input" required>
+              <input type="password" id="current_password" name="current_password" class="form-input" autocomplete="current-password" required>
             </div>
             <div class="form-group">
               <label class="form-label" for="new_password">New Password</label>
-              <input type="password" id="new_password" name="new_password" class="form-input" required>
+              <input type="password" id="new_password" name="new_password" class="form-input" autocomplete="new-password" required>
             </div>
 
             <div class="pw-reqs">
@@ -71,8 +72,8 @@ $success = isset($success) ? $success : '';
 
             <div class="form-group">
               <label class="form-label" for="confirm_password">Confirm New Password</label>
-              <input type="password" id="confirm_password" name="confirm_password" class="form-input" required>
-              <div id="matchMsg" class="match-msg"></div>
+              <input type="password" id="confirm_password" name="confirm_password" class="form-input" autocomplete="new-password" required>
+              <div id="matchMsg" class="match-msg" aria-live="polite"></div>
             </div>
 
             <button type="submit" class="btn btn--primary btn--full" id="pwBtn" disabled>
@@ -88,20 +89,21 @@ $success = isset($success) ? $success : '';
           <i class="fas fa-arrow-left"></i> Back to Dashboard
         </a>
 
-        <button class="btn btn--danger btn--full" onclick="toggleSection('delSection')">
+        <button type="button" class="btn btn--danger btn--full" onclick="toggleSection('delSection', this)" aria-controls="delSection" aria-expanded="false">
           <i class="fas fa-trash-alt"></i> Delete Account
         </button>
 
         <!-- Delete Confirmation -->
-        <div id="delSection" class="collapse-section collapse-section--danger">
+        <div id="delSection" class="collapse-section collapse-section--danger" aria-hidden="true">
           <p style="color:var(--color-danger); font-weight:600; font-size:0.85rem; margin-bottom:14px;">
             <i class="fas fa-exclamation-triangle"></i>
             This action cannot be undone. All your books will be permanently deleted.
           </p>
           <form method="POST" action="/delete-account">
+            <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
             <div class="form-group">
-              <label class="form-label" style="color:var(--color-danger);">Enter your password to confirm:</label>
-              <input type="password" name="confirm_password" class="form-input" required>
+              <label class="form-label" for="delete_confirm_password" style="color:var(--color-danger);">Enter your password to confirm:</label>
+              <input type="password" id="delete_confirm_password" name="confirm_password" class="form-input" autocomplete="current-password" required>
             </div>
             <button type="submit" class="btn btn--danger btn--full">
               <i class="fas fa-trash-alt"></i> Permanently Delete Account
@@ -114,7 +116,7 @@ $success = isset($success) ? $success : '';
       </div>
 
       <div class="link-row" style="margin-top:28px;">
-        <a href="#" onclick="if(confirm('Are you sure you want to logout?')) window.location.href='/logout'">
+        <a href="/logout" onclick="return confirm('Are you sure you want to logout?')">
           <i class="fas fa-sign-out-alt"></i> Logout
         </a>
       </div>
@@ -125,8 +127,14 @@ $success = isset($success) ? $success : '';
   <?php include __DIR__ . '/components/footer.php'; ?>
 
   <script>
-    function toggleSection(id) {
-      document.getElementById(id).classList.toggle('show');
+    function toggleSection(id, trigger) {
+      const section = document.getElementById(id);
+      const isOpen = section.classList.toggle('show');
+      section.setAttribute('aria-hidden', String(!isOpen));
+      const control = trigger || document.querySelector(`[aria-controls="${id}"]`);
+      if (control) {
+        control.setAttribute('aria-expanded', String(isOpen));
+      }
     }
 
     const np = document.getElementById('new_password');

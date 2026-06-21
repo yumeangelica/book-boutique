@@ -20,28 +20,29 @@
       </div>
 
       <?php if (isset($success)): ?>
-        <div class="alert alert--success">
+        <div class="alert alert--success" role="status">
           <i class="fas fa-check-circle"></i>
           <?= htmlspecialchars($success) ?>
         </div>
       <?php endif; ?>
 
       <?php if (isset($error)): ?>
-        <div class="alert alert--danger">
+        <div class="alert alert--danger" role="alert">
           <i class="fas fa-exclamation-circle"></i>
           <?= htmlspecialchars($error) ?>
         </div>
       <?php endif; ?>
 
       <form action="/login" method="post">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
         <div class="form-group">
           <label class="form-label" for="username">Username</label>
-          <input type="text" class="form-input" id="username" name="username" placeholder="Enter your username" required>
+          <input type="text" class="form-input" id="username" name="username" placeholder="Enter your username" autocomplete="username" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="password">Password</label>
-          <input type="password" class="form-input" id="password" name="password" placeholder="Enter your password" required>
+          <input type="password" class="form-input" id="password" name="password" placeholder="Enter your password" autocomplete="current-password" required>
         </div>
 
         <button type="submit" class="btn btn--primary btn--full btn--lg">

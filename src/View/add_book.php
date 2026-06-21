@@ -1,8 +1,5 @@
 <?php
-$error = null;
-$errorType = $_GET['error'] ?? null;
-if ($errorType == '1') { $error = "Failed to add book. Please try again."; }
-elseif ($errorType == '2') { $error = "Title and Author are required fields."; }
+$error = $error ?? null;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,31 +23,32 @@ elseif ($errorType == '2') { $error = "Title and Author are required fields."; }
       </div>
 
       <?php if ($error): ?>
-        <div class="alert alert--danger"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
+        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 
       <form action="/books/add" method="post" id="bookForm">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
         <div class="form-group">
           <label class="form-label" for="title"><i class="fas fa-book"></i> Title *</label>
-          <input type="text" class="form-input" id="title" name="title" placeholder="Book title" required>
+          <input type="text" class="form-input" id="title" name="title" placeholder="Book title" minlength="2" maxlength="255" required value="<?= isset($_POST['title']) ? htmlspecialchars($_POST['title']) : '' ?>">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="author"><i class="fas fa-user"></i> Author *</label>
-          <input type="text" class="form-input" id="author" name="author" placeholder="Author name" required>
+          <input type="text" class="form-input" id="author" name="author" placeholder="Author name" minlength="2" maxlength="255" required value="<?= isset($_POST['author']) ? htmlspecialchars($_POST['author']) : '' ?>">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="isbn"><i class="fas fa-barcode"></i> ISBN</label>
-          <input type="text" class="form-input" id="isbn" name="isbn" placeholder="ISBN-10 or ISBN-13 (optional)">
-          <div class="invalid-feedback" id="isbn-feedback" style="display:none;">
+          <input type="text" class="form-input" id="isbn" name="isbn" placeholder="ISBN-10 or ISBN-13 (optional)" aria-describedby="isbn-feedback" value="<?= isset($_POST['isbn']) ? htmlspecialchars($_POST['isbn']) : '' ?>">
+          <div class="invalid-feedback" id="isbn-feedback" aria-live="polite" style="display:none;">
             Please enter a valid ISBN-10 or ISBN-13 format.
           </div>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="published_year"><i class="fas fa-calendar"></i> Published Year</label>
-          <input type="number" class="form-input" id="published_year" name="published_year" placeholder="e.g. 2024 (optional)" min="1000" max="<?= date('Y') ?>">
+          <input type="number" class="form-input" id="published_year" name="published_year" placeholder="e.g. 2024 (optional)" min="1000" max="<?= date('Y') ?>" value="<?= isset($_POST['published_year']) ? htmlspecialchars($_POST['published_year']) : '' ?>">
         </div>
 
         <div class="actions actions--mt">
