@@ -83,7 +83,7 @@ docker compose up -d
 
   - `id` (Primary Key)
   - `username` (Unique, required)
-  - `password_hash` (Secure bcrypt hash)
+  - `password_hash` (Secure hash via PHP `password_hash`, currently bcrypt)
   - `created_at` (Timestamp)
 
 - **books**: Personal book records linked to users
