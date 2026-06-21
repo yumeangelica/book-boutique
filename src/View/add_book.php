@@ -1,8 +1,5 @@
 <?php
 $error = $error ?? null;
-$errorType = $_GET['error'] ?? null;
-if (!$error && $errorType == '1') { $error = "Failed to add book. Please try again."; }
-elseif (!$error && $errorType == '2') { $error = "Title and Author are required fields."; }
 ?>
 <!DOCTYPE html>
 <html lang="en">
