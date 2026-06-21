@@ -11,16 +11,15 @@ class AuthController
   {
     $user = User::verifyCredentials($username, $password);
     if ($user) {
+      session_regenerate_id(true);
+      Csrf::regenerate();
       $_SESSION['logged_in'] = true;
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['username'] = $user['username'];
-      header('Location: /dashboard');
-      exit;
-    } else {
-      $error = "Invalid username or password.";
-      require __DIR__ . '/../View/login.php';
-      return false;
+      return true;
     }
+
+    return false;
   }
 
 
@@ -29,6 +28,12 @@ class AuthController
     $username = $_POST['username'] ?? null;
     $password = $_POST['password'] ?? null;
     $error = null;
+
+    if (!Csrf::validate($_POST['csrf_token'] ?? '')) {
+      $error = "Invalid form submission. Please try again.";
+      require __DIR__ . '/../View/register.php';
+      return;
+    }
 
     if ($username && $password) {
       // Validate password strength
@@ -121,6 +126,12 @@ class AuthController
     $username = $_SESSION['username'];
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
+    if (!Csrf::validate($_POST['csrf_token'] ?? '')) {
+      $error = "Invalid form submission. Please try again.";
+      require __DIR__ . '/../View/account.php';
+      return;
+    }
+
     // Validate that password was provided
     if (empty($confirmPassword)) {
       $error = "Password confirmation is required to delete your account.";
@@ -170,6 +181,12 @@ class AuthController
     $currentPassword = $_POST['current_password'] ?? '';
     $newPassword = $_POST['new_password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
+
+    if (!Csrf::validate($_POST['csrf_token'] ?? '')) {
+      $error = "Invalid form submission. Please try again.";
+      require __DIR__ . '/../View/account.php';
+      return;
+    }
 
     // Validate all fields are provided
     if (empty($currentPassword) || empty($newPassword) || empty($confirmPassword)) {

@@ -20,22 +20,24 @@
       </div>
 
       <?php if (isset($error)): ?>
-        <div class="alert alert--danger">
+        <div class="alert alert--danger" role="alert">
           <i class="fas fa-exclamation-circle"></i>
           <?= htmlspecialchars($error) ?>
         </div>
       <?php endif; ?>
 
       <form action="/register" method="post" id="registerForm">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
         <div class="form-group">
           <label class="form-label" for="username">Username</label>
           <input type="text" class="form-input" id="username" name="username" placeholder="Choose a username" required
+                 autocomplete="username"
                  value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
         </div>
 
         <div class="form-group">
           <label class="form-label" for="password">Password</label>
-          <input type="password" class="form-input" id="password" name="password" placeholder="Create a password" required>
+          <input type="password" class="form-input" id="password" name="password" placeholder="Create a password" autocomplete="new-password" required>
         </div>
 
         <div class="pw-reqs" id="passwordRequirements">

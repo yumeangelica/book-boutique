@@ -20,10 +20,10 @@
       </div>
 
       <?php if (!empty($successMessage)): ?>
-        <div class="alert alert--success"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($successMessage) ?></div>
+        <div class="alert alert--success" role="status"><i class="fas fa-check-circle"></i> <?= htmlspecialchars($successMessage) ?></div>
       <?php endif; ?>
       <?php if (!empty($errorMessage)): ?>
-        <div class="alert alert--danger"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($errorMessage) ?></div>
+        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-circle"></i> <?= htmlspecialchars($errorMessage) ?></div>
       <?php endif; ?>
 
       <?php if (!empty($books)): ?>
@@ -47,13 +47,16 @@
                   <td><?= $book['published_year'] ? htmlspecialchars($book['published_year']) : '<span class="muted">N/A</span>' ?></td>
                   <td>
                     <div class="row-actions">
-                      <a href="/books/edit/<?= $book['id'] ?>" class="btn btn--primary btn--xs">
+                      <a href="/books/edit/<?= (int) $book['id'] ?>" class="btn btn--primary btn--xs" aria-label="Edit <?= htmlspecialchars($book['title']) ?>">
                         <i class="fas fa-edit"></i> Edit
                       </a>
-                      <a href="/books/delete/<?= $book['id'] ?>" class="btn btn--danger btn--xs"
-                         onclick="return confirm('Are you sure you want to delete this book?')">
-                        <i class="fas fa-trash"></i> Delete
-                      </a>
+                      <form action="/books/delete/<?= (int) $book['id'] ?>" method="post" class="inline-form"
+                            onsubmit="return confirm('Are you sure you want to delete this book?')">
+                        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
+                        <button type="submit" class="btn btn--danger btn--xs" aria-label="Delete <?= htmlspecialchars($book['title']) ?>">
+                          <i class="fas fa-trash"></i> Delete
+                        </button>
+                      </form>
                     </div>
                   </td>
                 </tr>

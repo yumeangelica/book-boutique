@@ -20,9 +20,13 @@ $deletePattern = '/^\/books\/delete\/(\d+)$/';
 $editPattern = '/^\/books\/edit\/(\d+)$/';
 $updatePattern = '/^\/books\/update\/(\d+)$/';
 
-if (preg_match($deletePattern, $path, $matches) && $requestMethod == 'GET') {
-  $controller = new \Controller\BookController();
-  $controller->delete($matches[1]);
+if (preg_match($deletePattern, $path, $matches)) {
+  if ($requestMethod === 'POST') {
+    $controller = new \Controller\BookController();
+    $controller->delete($matches[1]);
+  } else {
+    header('Location: /books');
+  }
   exit;
 } elseif (preg_match($editPattern, $path, $matches) && $requestMethod == 'GET') {
   $controller = new \Controller\BookController();
@@ -39,13 +43,16 @@ switch ($path) {
   case '/':
   case '/login':
     if ($requestMethod === 'POST') {
-      $controller = new \Controller\AuthController();
-      if ($controller->login($_POST['username'], $_POST['password'])) {
-        $_SESSION['logged_in'] = true;
-        header('Location: /dashboard');
-        exit;
+      if (!\Controller\Csrf::validate($_POST['csrf_token'] ?? '')) {
+        $error = "Invalid form submission. Please try again.";
       } else {
-        $error = "Invalid username or password.";
+        $controller = new \Controller\AuthController();
+        if ($controller->login($_POST['username'] ?? '', $_POST['password'] ?? '')) {
+          header('Location: /dashboard');
+          exit;
+        } else {
+          $error = "Invalid username or password.";
+        }
       }
     }
     // Check if user was redirected after successful registration or account deletion
@@ -91,14 +98,6 @@ switch ($path) {
   case '/books/add':
     $controller = new \Controller\BookController();
     $controller->add();
-    break;
-  case '/books/edit/(\d+)':
-    $controller = new \Controller\BookController();
-    $controller->showEditForm($matches[1]);
-    break;
-  case '/books/update/(\d+)':
-    $controller = new \Controller\BookController();
-    $controller->update($matches[1]);
     break;
   case '/logout':
     session_unset();

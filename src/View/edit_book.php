@@ -19,21 +19,26 @@
         <p class="page-header__subtitle">Update book information</p>
       </div>
 
-      <form action="/books/update/<?= $book['id'] ?>" method="post" id="bookForm">
+      <?php if (!empty($error)): ?>
+        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
+      <?php endif; ?>
+
+      <form action="/books/update/<?= (int) $book['id'] ?>" method="post" id="bookForm">
+        <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
         <div class="form-group">
           <label class="form-label" for="title"><i class="fas fa-book"></i> Title *</label>
-          <input type="text" class="form-input" id="title" name="title" value="<?= htmlspecialchars($book['title']) ?>" required>
+          <input type="text" class="form-input" id="title" name="title" value="<?= htmlspecialchars($book['title']) ?>" minlength="2" maxlength="255" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="author"><i class="fas fa-user"></i> Author *</label>
-          <input type="text" class="form-input" id="author" name="author" value="<?= htmlspecialchars($book['author']) ?>" required>
+          <input type="text" class="form-input" id="author" name="author" value="<?= htmlspecialchars($book['author']) ?>" minlength="2" maxlength="255" required>
         </div>
 
         <div class="form-group">
           <label class="form-label" for="isbn"><i class="fas fa-barcode"></i> ISBN</label>
-          <input type="text" class="form-input" id="isbn" name="isbn" value="<?= $book['isbn'] ? htmlspecialchars($book['isbn']) : '' ?>">
-          <div class="invalid-feedback" id="isbn-feedback" style="display:none;">
+          <input type="text" class="form-input" id="isbn" name="isbn" aria-describedby="isbn-feedback" value="<?= $book['isbn'] ? htmlspecialchars($book['isbn']) : '' ?>">
+          <div class="invalid-feedback" id="isbn-feedback" aria-live="polite" style="display:none;">
             Please enter a valid ISBN-10 or ISBN-13 format.
           </div>
         </div>
