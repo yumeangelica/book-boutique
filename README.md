@@ -1,25 +1,29 @@
 # 📚 Book Boutique
 
-A modern PHP web application for personal book collection management with user authentication, responsive design, and comprehensive security features.
+A modern PHP web application for personal book collection management with user authentication, responsive design, and practical security features.
 
 ## Features
 
 ### Book Management
 
 - Personal book library with full CRUD operations
+- User-scoped book access so each account only manages its own library
 - ISBN validation with check digit verification (supports ISBN-10 and ISBN-13)
 - Optional ISBN and publication year fields
-- Real-time form validation with user-friendly feedback
+- Client-side and server-side form validation with user-friendly feedback
 
 ### Security & Authentication
 
 - User registration with strong password requirements
 - Real-time password strength validation
 - Secure password hashing (PHP password_hash)
+- Session ID regeneration after successful login
 - **Password change functionality** with current password verification
 - Account management with secure deletion
 - Password confirmation required for account deletion and password changes
 - Logout confirmation to prevent accidental sign-outs
+- CSRF protection on POST forms
+- Destructive book deletion handled with POST requests
 - SQL injection protection with prepared statements
 
 ### User Experience
@@ -30,6 +34,7 @@ A modern PHP web application for personal book collection management with user a
 - Real-time client-side validation
 - Dynamic error and success messaging
 - Intuitive navigation with user account management
+- Visible keyboard focus states for interactive controls
 - Dynamic footer component with automatic copyright year updates
 
 ### Password Security
@@ -67,7 +72,7 @@ cp .env.example .env
 4. Start the application:
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 5. Access the application at `http://localhost:8080`
@@ -101,13 +106,16 @@ Database features automatic cascade deletion - when a user account is deleted, a
 - **Dashboard**: Welcome screen with quick access to features
 - **Book Library**: View, add, edit, and delete books
 - **Account Management**: User profile with secure account deletion and **password change**
-- **Add/Edit Books**: Comprehensive form validation with ISBN checking
+- **Add/Edit Books**: Server-side and client-side form validation with ISBN checking
 - **Password Change**: Secure password update requiring current password verification
 
 ### Security Features
 
 - All database queries use prepared statements
+- Book records are scoped to the authenticated user for viewing, editing, updating, and deletion
+- State-changing forms include CSRF tokens
 - Password strength validation (frontend + backend)
+- Session ID regeneration after login
 - **Current password verification** for password changes and account deletion
 - Session management with proper cleanup
 - Input sanitization and validation
@@ -157,13 +165,13 @@ Copy `.env.example` to `.env` and customize values as needed.
 Stop containers:
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 View logs:
 
 ```bash
-docker-compose logs -f
+docker compose logs -f
 ```
 
 Access MySQL database:
@@ -175,7 +183,27 @@ docker exec -it book-boutique-mysql mysql -u demo_user -pdemo_password book_bout
 Restart containers:
 
 ```bash
-docker-compose restart
+docker compose restart
+```
+
+### Verification
+
+Validate the Docker configuration:
+
+```bash
+docker compose config
+```
+
+Validate Composer metadata:
+
+```bash
+docker compose exec -T php composer validate --strict
+```
+
+Run PHP syntax checks:
+
+```bash
+docker compose exec -T php sh -lc 'find public config src -name "*.php" -print0 | xargs -0 -n1 php -l'
 ```
 
 ### Development Notes
@@ -183,6 +211,7 @@ docker-compose restart
 - Database tables are automatically created on first run
 - Foreign key constraints ensure data integrity
 - All forms include both client-side and server-side validation
+- Book edit, update, and delete operations are restricted to the authenticated owner
 - Password requirements are enforced on both frontend and backend
 - **Password change functionality** includes current password verification
 - Session security includes proper cleanup and validation
@@ -194,6 +223,7 @@ docker-compose restart
 - Default demo credentials are provided for local development
 - In production, customize the `.env` file with strong, unique passwords
 - Database credentials are configurable via environment variables
+- CSRF tokens rely on PHP sessions, so production deployments should use HTTPS and secure session cookie settings
 - Never commit real production credentials to version control
 
 ## Manual Installation
@@ -203,8 +233,9 @@ If you prefer running without Docker:
 1. Install PHP 8.1+, MySQL 8.0+, and Composer
 2. Run `composer install`
 3. Create `.env` file with database credentials (copy from `.env.example`)
-4. Import `sql/init.sql` to your database
-5. Start with `php -S localhost:8000 -t public`
+4. Create the database named in `DB_NAME` (default: `book_boutique_db`)
+5. Optionally import `sql/init.sql` for the default local schema; the app also creates missing tables on first connection
+6. Start with `php -S localhost:8000 -t public`
 
 ## Production Deployment
 
@@ -228,7 +259,7 @@ DB_PASS=very_secure_random_password_here
 DB_ROOT_PASSWORD=another_very_secure_password
 ```
 
-## Screenshots & Features
+## Feature Highlights
 
 ### Password Security
 
@@ -242,6 +273,8 @@ DB_ROOT_PASSWORD=another_very_secure_password
 
 - **Secure Account Deletion**: Requires current password confirmation before account deletion
 - **Password Change Security**: Current password verification required for password updates
+- **CSRF Protection**: POST forms include session-backed CSRF tokens
+- **User-Scoped Records**: Book actions are limited to the authenticated owner
 - **Logout Protection**: Confirmation dialog prevents accidental logout
 - **Data Protection**: Foreign key constraints ensure complete data cleanup
 - **Password Reuse Prevention**: System prevents changing to the same current password
