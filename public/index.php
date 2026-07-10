@@ -2,6 +2,13 @@
 require_once __DIR__ . '/../config/config.php';
 require_once __DIR__ . '/../vendor/autoload.php';
 
+ini_set('session.use_strict_mode', '1');
+session_set_cookie_params([
+  'httponly' => true,
+  'secure' => !empty($_SERVER['HTTPS']),
+  'samesite' => 'Lax',
+  'path' => '/',
+]);
 session_start();
 
 $request = $_SERVER['REQUEST_URI'];
@@ -114,6 +121,9 @@ switch ($path) {
       header('Location: /login');
       exit;
     }
+    if (isset($queryParams['pwchanged'])) {
+      $success = "Password successfully changed!";
+    }
     require __DIR__ . '/../src/View/account.php';
     break;
   case '/delete-account':
@@ -144,6 +154,6 @@ switch ($path) {
     break;
   default:
     http_response_code(404);
-    echo '404 Not Found';
+    require __DIR__ . '/../src/View/error_404.php';
     break;
 }

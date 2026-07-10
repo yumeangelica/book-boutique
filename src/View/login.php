@@ -1,19 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login - Book Boutique</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-  <link href="/css/style.css" rel="stylesheet">
-</head>
+<?php $pageTitle = 'Login'; require __DIR__ . '/components/head.php'; ?>
 <body class="login-page">
-  <div class="page-wrapper">
+  <?php require __DIR__ . '/components/header.php'; ?>
+  <main class="page-wrapper" id="main-content" tabindex="-1">
     <div class="card card--sm">
 
       <div class="page-header">
         <div class="page-header__icon">
-          <i class="fas fa-book-open"></i>
+          <i class="fas fa-book-open" aria-hidden="true"></i>
         </div>
         <h1 class="page-header__title">Welcome Back</h1>
         <p class="page-header__subtitle">Sign in to your Book Boutique</p>
@@ -21,14 +14,14 @@
 
       <?php if (isset($success)): ?>
         <div class="alert alert--success" role="status">
-          <i class="fas fa-check-circle"></i>
+          <i class="fas fa-check-circle" aria-hidden="true"></i>
           <?= htmlspecialchars($success) ?>
         </div>
       <?php endif; ?>
 
       <?php if (isset($error)): ?>
         <div class="alert alert--danger" role="alert">
-          <i class="fas fa-exclamation-circle"></i>
+          <i class="fas fa-exclamation-circle" aria-hidden="true"></i>
           <?= htmlspecialchars($error) ?>
         </div>
       <?php endif; ?>
@@ -46,7 +39,7 @@
         </div>
 
         <button type="submit" class="btn btn--primary btn--full btn--lg">
-          <i class="fas fa-sign-in-alt"></i> Sign In
+          <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Sign In
         </button>
       </form>
 
@@ -55,7 +48,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <?php include __DIR__ . '/components/footer.php'; ?>
 </body>

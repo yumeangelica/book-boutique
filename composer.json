@@ -1,6 +1,7 @@
 {
   "name": "yumeangelica/book-boutique",
   "description": "A modern PHP web application for personal book collection management",
+  "version": "1.1.0",
   "type": "project",
   "license": "MIT",
   "authors": [

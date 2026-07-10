@@ -25,7 +25,7 @@ class AuthController
 
   public function register()
   {
-    $username = $_POST['username'] ?? null;
+    $username = trim($_POST['username'] ?? '');
     $password = $_POST['password'] ?? null;
     $error = null;
 
@@ -36,6 +36,13 @@ class AuthController
     }
 
     if ($username && $password) {
+      // Validate username format
+      if (!preg_match('/^[A-Za-z0-9_.-]{3,50}$/', $username)) {
+        $error = "Username must be 3-50 characters and may only contain letters, numbers, dots, hyphens and underscores.";
+        require __DIR__ . '/../View/register.php';
+        return;
+      }
+
       // Validate password strength
       $passwordValidation = $this->validatePasswordStrength($password);
       if (!$passwordValidation['valid']) {
@@ -233,8 +240,9 @@ class AuthController
       $result = User::updatePassword($userId, $newHashedPassword);
 
       if ($result) {
-        $success = "Password successfully changed!";
-        require __DIR__ . '/../View/account.php';
+        // PRG: redirect so a refresh doesn't re-submit the form
+        header('Location: /account?pwchanged=1');
+        exit;
       } else {
         $error = "Failed to update password. Please try again.";
         require __DIR__ . '/../View/account.php';

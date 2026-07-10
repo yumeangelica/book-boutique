@@ -1,18 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap');
-@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.7.2/css/all.min.css');
-
-.fas {
-  font-family: "Font Awesome 6 Free";
-  font-weight: 900;
-}
-
-.fas::before,
-.fa-solid::before,
-[class^="fa-"]::before,
-[class*=" fa-"]::before {
-  font-family: "Font Awesome 6 Free" !important;
-  font-weight: 900 !important;
-}
+/* Mobile-first stylesheet: base styles target small screens,
+   a single min-width media query restores the desktop layout.
+   Fonts and Font Awesome are loaded once via src/View/components/head.php. */
 
 /* ── Variables ── */
 :root {
@@ -21,40 +9,58 @@
   --color-primary-light: rgb(241, 199, 232);
   --color-primary-lighter: rgb(248, 228, 243);
   --color-primary-dark: rgb(95, 41, 74);
+  /* darkened variants for WCAG AA text contrast on white and pink tints */
+  --color-primary-strong: rgb(140, 45, 100);
   --color-background: rgb(255, 250, 253);
   --color-text: rgb(33, 33, 33);
-  --color-heading: var(--color-primary);
+  --color-heading: rgb(145, 52, 108);
   --color-accent: rgb(165, 79, 144);
   --color-card-bg: rgb(254, 239, 249);
   --color-button: rgb(148, 75, 118);
   --color-button-hover: rgb(130, 62, 100);
   --color-border: rgba(178, 77, 137, 0.26);
   --color-border-focus: rgba(178, 77, 137, 0.3);
-  --color-muted: rgb(140, 120, 130);
-  --color-success: rgb(90, 160, 110);
+  --color-muted: rgb(93, 93, 93);
+  --color-success: rgb(20, 105, 60);
   --color-success-light: rgb(232, 245, 233);
-  --color-danger: rgb(190, 70, 70);
+  --color-danger: rgb(155, 45, 45);
   --color-danger-light: rgb(252, 238, 238);
-  --shadow-sm: 0 3px 12px rgba(178, 77, 137, 0.11);
-  --shadow-md: 0 8px 24px rgba(178, 77, 137, 0.13);
-  --shadow-lg: 0 12px 36px rgba(178, 77, 137, 0.15);
+  /* cream "duo card" surfaces and pink->lilac gradients shared with the
+     author's sister projects (yumeangelica.github.io, needypet) */
+  --color-card-cream: rgb(255, 249, 252);
+  --color-card-edge: rgba(204, 179, 216, 0.65);
+  --color-well: rgb(246, 236, 251);
+  --color-surface-field: rgb(253, 246, 251);
+  --color-pill-cream: rgba(255, 249, 252, 0.72);
+  --gradient-soft: linear-gradient(135deg, #fbcde6 0%, #f3d9f3 55%, #eedbfa 100%);
+  --gradient-nav: linear-gradient(90deg, #fbcde6 0%, #f8d7ee 55%, #f3d9f3 100%);
+  --shadow-nav: 0 2px 12px rgba(178, 110, 150, 0.2);
+  --shadow-sm: 0 1px 2px rgba(95, 41, 74, 0.08), 0 2px 8px rgba(95, 41, 74, 0.08);
+  --shadow-md: 0 2px 4px rgba(95, 41, 74, 0.1), 0 6px 16px rgba(95, 41, 74, 0.12);
+  --shadow-lg: 0 4px 8px rgba(95, 41, 74, 0.1), 0 12px 28px rgba(95, 41, 74, 0.16);
   --radius-sm: 10px;
   --radius-md: 14px;
   --radius-lg: 20px;
+  --radius-xl: 25px;
+  --radius-pill: 999px;
+  --tap-target: 44px;
   --transition: 0.3s ease;
 }
 
-/* ── Reset & Base ── */
+/* ── Reset & Base ──
+   Note: the reset must not set font-family on ::before/::after —
+   Font Awesome renders its glyphs through pseudo-elements. */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
-  font-family: 'Comfortaa', sans-serif;
 }
 
 html { scroll-behavior: smooth; }
 
 body {
   background-color: var(--color-background);
+  background-image: linear-gradient(180deg, rgb(255, 245, 251) 0%, rgb(255, 250, 253) 45%, rgb(247, 240, 252) 100%);
+  background-attachment: fixed;
   color: var(--color-text);
   min-height: 100vh;
   line-height: 1.8;
@@ -69,28 +75,129 @@ body {
   margin: 0;
 }
 
+/* ── Accessibility helpers ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 100;
+  background: var(--color-button);
+  color: var(--color-white);
+  padding: 12px 20px;
+  font-weight: 700;
+  border-radius: 0 0 var(--radius-sm) 0;
+  text-decoration: none;
+}
+
+.skip-link:focus {
+  left: 0;
+  color: var(--color-white);
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-button);
+  outline-offset: 2px;
+}
+
+main:focus { outline: none; }
+
+/* ── Site Header & Nav ── */
+.site-header {
+  background: var(--gradient-nav);
+  box-shadow: var(--shadow-nav);
+}
+
+.site-nav {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 6px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 12px;
+}
+
+.site-nav__brand {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-primary-dark);
+}
+
+.site-nav__brand:hover { color: var(--color-primary-strong); }
+
+.site-nav__links {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav__link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap-target);
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  border-radius: var(--radius-pill);
+}
+
+.site-nav__link:hover {
+  background: var(--color-pill-cream);
+  color: var(--color-primary-strong);
+}
+
+.site-nav__link[aria-current="page"] {
+  font-weight: 700;
+  color: var(--color-primary-dark);
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 5px;
+}
+
 /* ── Layout ── */
 .page-wrapper {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 20px;
+  padding: 16px 12px;
 }
 
 .page-wrapper--top {
   align-items: flex-start;
-  padding-top: 48px;
+  padding-top: 24px;
 }
 
-/* ── Cards — light & airy ── */
+/* ── Cards — cream body with a pink→lilac gradient band (duo card) ── */
 .card {
-  background: var(--color-white);
-  border: 2px solid var(--color-border);
+  background: var(--color-card-cream);
+  border: 1.5px solid var(--color-card-edge);
   border-radius: var(--radius-lg);
-  padding: 40px;
+  padding: 24px 18px;
   width: 100%;
   box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
 .card--sm { max-width: 440px; }
@@ -98,24 +205,41 @@ body {
 .card--lg { max-width: 720px; }
 .card--xl { max-width: 1100px; }
 
-/* ── Page Header ── */
+/* ── Page Header — gradient band bleeding to the card edges ── */
 .page-header {
+  position: relative;
   text-align: center;
-  margin-bottom: 32px;
+  background: var(--gradient-soft);
+  margin: -24px -18px 28px;
+  padding: 26px 18px 22px;
+  border-bottom: 1px solid var(--color-card-edge);
+}
+
+/* decorative heart watermark on the band */
+.page-header::after {
+  content: "\2661" / "";
+  position: absolute;
+  right: 14px;
+  bottom: -18px;
+  font-size: 64px;
+  line-height: 1;
+  color: rgba(178, 77, 137, 0.14);
+  pointer-events: none;
 }
 
 .page-header__icon {
   width: 60px;
   height: 60px;
-  background: var(--color-primary-lighter);
-  border: 1px solid var(--color-primary-light);
+  background: var(--color-card-cream);
+  border: 2px solid rgba(255, 255, 255, 0.9);
   border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 14px;
-  color: var(--color-primary);
+  color: var(--color-primary-strong);
   font-size: 24px;
+  box-shadow: var(--shadow-sm);
 }
 
 .page-header__icon--round {
@@ -126,7 +250,7 @@ body {
 }
 
 .page-header__title {
-  font-size: 1.6rem;
+  font-size: clamp(1.3rem, 4vw + 0.5rem, 1.6rem);
   font-weight: 700;
   color: var(--color-heading);
   margin: 0 0 4px;
@@ -134,7 +258,7 @@ body {
 
 .page-header__subtitle {
   font-size: 0.9rem;
-  color: var(--color-muted);
+  color: var(--color-primary-dark);
   margin: 0;
   font-weight: 400;
 }
@@ -148,18 +272,12 @@ h1, h2, h3, h4, h5 {
 p { color: var(--color-text); line-height: 1.8; }
 
 a {
-  color: var(--color-primary);
+  color: var(--color-primary-strong);
   text-decoration: none;
   transition: color var(--transition);
 }
 
 a:hover { color: var(--color-primary-dark); }
-
-a:focus-visible,
-.btn:focus-visible {
-  outline: 3px solid rgba(178, 77, 137, 0.35);
-  outline-offset: 3px;
-}
 
 strong { font-weight: 700; }
 
@@ -170,38 +288,36 @@ strong { font-weight: 700; }
   display: block;
   font-weight: 600;
   font-size: 0.82rem;
-  color: var(--color-muted);
+  color: var(--color-text);
   margin-bottom: 6px;
 }
 
-.form-label i { color: var(--color-primary-light); }
+.form-label i { color: var(--color-primary); }
+
+.form-label--danger { color: var(--color-danger); }
 
 .form-input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 18px;
   border: 1.6px solid rgba(178, 77, 137, 0.24);
-  border-radius: var(--radius-sm);
+  border-radius: 16px;
   font-size: 0.92rem;
   font-family: 'Comfortaa', sans-serif;
-  background: var(--color-white);
+  background: var(--color-surface-field);
   color: var(--color-text);
+  box-shadow: inset 0 1px 2px rgba(178, 110, 150, 0.12);
   transition: border-color var(--transition), box-shadow var(--transition);
-  outline: none;
 }
 
 .form-input:focus {
-  border-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  background: var(--color-white);
   box-shadow: 0 0 0 3px rgba(241, 199, 232, 0.4);
-}
-
-.form-input:focus-visible {
-  outline: 2px solid rgba(178, 77, 137, 0.35);
-  outline-offset: 2px;
 }
 
 .form-input::placeholder {
   color: var(--color-muted);
-  opacity: 0.5;
+  opacity: 1;
 }
 
 .form-input.is-valid { border-color: var(--color-success); }
@@ -213,15 +329,17 @@ strong { font-weight: 700; }
   margin-top: 4px;
 }
 
-/* ── Buttons — light by default ── */
+/* ── Buttons ── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  width: 100%;
+  min-height: var(--tap-target);
   padding: 11px 24px;
   border: none;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-pill);
   font-family: 'Comfortaa', sans-serif;
   font-size: 0.85rem;
   font-weight: 600;
@@ -229,65 +347,65 @@ strong { font-weight: 700; }
   transition: all var(--transition);
   text-decoration: none;
   line-height: 1.4;
-  box-shadow: 0 2px 10px rgba(178, 77, 137, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .btn:active { transform: scale(0.98); }
 
-/* Primary — light pink bg, magenta text */
+/* Primary — solid plum, white text (AA) */
 .btn--primary {
-  background: var(--color-primary-lighter);
-  color: var(--color-primary);
-  border: 1.5px solid var(--color-primary-light);
+  background: var(--color-button);
+  color: var(--color-white);
+  border: 1.5px solid transparent;
 }
 
 .btn--primary:hover {
-  background: var(--color-primary-light);
-  color: var(--color-primary-dark);
+  background: var(--color-button-hover);
+  color: var(--color-white);
 }
 
-/* Secondary — very subtle */
+/* Secondary — quiet outline */
 .btn--secondary {
   background: var(--color-white);
-  color: var(--color-muted);
+  color: var(--color-primary-strong);
   border: 1.6px solid var(--color-border);
 }
 
 .btn--secondary:hover {
   background: var(--color-primary-lighter);
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
   border-color: var(--color-primary-light);
 }
 
-/* Danger — soft red */
+/* Danger — soft red tint, dark red text (AA) */
 .btn--danger {
   background: var(--color-danger-light);
   color: var(--color-danger);
-  border: 1.5px solid rgba(190, 70, 70, 0.15);
+  border: 1.5px solid rgba(155, 45, 45, 0.35);
 }
 
 .btn--danger:hover {
   background: rgb(248, 220, 220);
-  color: rgb(155, 50, 50);
+  color: rgb(130, 35, 35);
 }
 
-/* Success — soft green */
+/* Success — same solid plum as primary; affirmative actions share one color */
 .btn--success {
-  background: var(--color-success-light);
-  color: var(--color-success);
-  border: 1.5px solid rgba(90, 160, 110, 0.2);
+  background: var(--color-button);
+  color: var(--color-white);
+  border: 1.5px solid transparent;
 }
 
 .btn--success:hover {
-  background: rgb(215, 240, 220);
-  color: rgb(65, 130, 85);
+  background: var(--color-button-hover);
+  color: var(--color-white);
 }
 
 .btn--full { width: 100%; }
 .btn--lg { padding: 13px 28px; font-size: 0.9rem; }
 
 .btn:disabled {
-  opacity: 0.35;
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
@@ -309,21 +427,21 @@ strong { font-weight: 700; }
 .alert--success {
   background: var(--color-success-light);
   color: var(--color-success);
-  border-color: rgba(90, 160, 110, 0.22);
+  border-color: rgba(20, 105, 60, 0.22);
   border-left: 3px solid var(--color-success);
 }
 
 .alert--danger {
   background: var(--color-danger-light);
   color: var(--color-danger);
-  border-color: rgba(190, 70, 70, 0.22);
+  border-color: rgba(155, 45, 45, 0.22);
   border-left: 3px solid var(--color-danger);
 }
 
-/* ── Info Box — pastel ── */
+/* ── Info Box — lilac well ── */
 .info-box {
-  background: var(--color-primary-lighter);
-  border: 1.8px solid var(--color-primary-light);
+  background: var(--color-well);
+  border: 1.5px solid var(--color-card-edge);
   border-radius: var(--radius-md);
   padding: 22px;
   margin-bottom: 22px;
@@ -353,11 +471,33 @@ strong { font-weight: 700; }
 .info-box__label { color: var(--color-muted); font-weight: 500; }
 .info-box__value { color: var(--color-text); font-weight: 600; }
 
+.info-box__text {
+  color: var(--color-muted);
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.7;
+}
+
 /* ── Actions ── */
-.actions { display: flex; gap: 12px; flex-wrap: wrap; }
+.actions { display: flex; gap: 12px; flex-wrap: wrap; flex-direction: column; }
 .actions--center { justify-content: center; }
 .actions--stack { flex-direction: column; }
 .actions--mt { margin-top: 26px; }
+.actions--fill > .btn { flex: 1; }
+
+/* ── Utilities ── */
+.text-center { text-align: center; }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-28 { margin-top: 28px; }
+.is-hidden { display: none; }
+
+.danger-note {
+  color: var(--color-danger);
+  font-weight: 600;
+  font-size: 0.85rem;
+  margin-bottom: 14px;
+}
 
 /* ── Badge — light pill ── */
 .badge {
@@ -365,7 +505,7 @@ strong { font-weight: 700; }
   align-items: center;
   gap: 6px;
   background: var(--color-primary-lighter);
-  color: var(--color-primary);
+  color: var(--color-primary-strong);
   padding: 8px 20px;
   border-radius: 24px;
   font-weight: 600;
@@ -374,6 +514,7 @@ strong { font-weight: 700; }
   text-decoration: none;
   transition: all var(--transition);
   box-shadow: var(--shadow-sm);
+  min-height: var(--tap-target);
 }
 
 .badge:hover {
@@ -384,7 +525,7 @@ strong { font-weight: 700; }
 /* ── Table — light headers ── */
 .table-wrap {
   background: var(--color-white);
-  border: 1.9px solid var(--color-border);
+  border: 1.5px solid var(--color-card-edge);
   border-radius: var(--radius-md);
   overflow-x: auto;
   margin-bottom: 24px;
@@ -393,21 +534,23 @@ strong { font-weight: 700; }
 
 .table { width: 100%; border-collapse: collapse; }
 
+.table thead { background: var(--gradient-soft); }
+
 .table th {
-  background: var(--color-primary-lighter);
-  color: var(--color-primary);
+  background: transparent;
+  color: var(--color-primary-strong);
   font-weight: 700;
-  font-size: 0.72rem;
+  font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  padding: 13px 16px;
+  padding: 10px;
   text-align: left;
   border-bottom: 1px solid var(--color-primary-light);
 }
 
 .table td {
-  padding: 13px 16px;
-  font-size: 0.86rem;
+  padding: 10px;
+  font-size: 0.78rem;
   border-bottom: 1.2px solid rgba(178, 77, 137, 0.24);
   color: var(--color-text);
 }
@@ -430,7 +573,8 @@ strong { font-weight: 700; }
   font-size: 0.8rem;
 }
 
-.table .row-actions { display: flex; gap: 6px; }
+.table .row-actions { display: flex; gap: 6px; flex-direction: column; }
+.table .row-actions .inline-form { width: 100%; }
 
 .inline-form {
   display: inline-flex;
@@ -464,9 +608,9 @@ strong { font-weight: 700; }
 /* ── Password Requirements ── */
 .pw-reqs {
   padding: 14px;
-  background: var(--color-primary-lighter);
-  border-radius: var(--radius-sm);
-  border: 1.8px solid var(--color-primary-light);
+  background: var(--color-well);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--color-card-edge);
   margin-top: 8px;
   margin-bottom: 18px;
   font-size: 0.8rem;
@@ -500,9 +644,9 @@ strong { font-weight: 700; }
 }
 
 .pw-req.invalid { color: var(--color-danger); }
-.pw-req.invalid i { background: rgba(190,70,70,0.15); color: var(--color-danger); }
+.pw-req.invalid i { background: rgba(155, 45, 45, 0.15); color: var(--color-danger); }
 .pw-req.valid { color: var(--color-success); }
-.pw-req.valid i { background: rgba(90,160,110,0.15); color: var(--color-success); }
+.pw-req.valid i { background: rgba(20, 105, 60, 0.15); color: var(--color-success); }
 
 /* ── Collapsible ── */
 .collapse-section {
@@ -518,12 +662,12 @@ strong { font-weight: 700; }
 
 .collapse-section--danger {
   background: var(--color-danger-light);
-  border-color: rgba(190, 70, 70, 0.12);
+  border-color: rgba(155, 45, 45, 0.12);
 }
 
 .collapse-section--neutral {
-  background: var(--color-primary-lighter);
-  border-color: var(--color-primary-light);
+  background: var(--color-well);
+  border-color: var(--color-card-edge);
 }
 
 /* ── Divider ── */
@@ -533,7 +677,7 @@ strong { font-weight: 700; }
   margin: 22px 0;
 }
 
-/* ── Link Row ── */
+/* ── Link Row — with a small heart divider like the portfolio site ── */
 .link-row {
   text-align: center;
   margin-top: 22px;
@@ -541,16 +685,19 @@ strong { font-weight: 700; }
   color: var(--color-muted);
 }
 
-.link-row a { font-weight: 600; }
-
-/* ── Login Page — slightly stronger contrast ── */
-.login-page .card {
-  border: 1.8px solid rgba(178, 77, 137, 0.24);
-  box-shadow: var(--shadow-lg);
+.link-row::before {
+  content: "\2661" / "";
+  display: block;
+  color: var(--color-primary);
+  font-size: 1rem;
+  margin-bottom: 6px;
 }
 
-.login-page .page-header__icon {
-  border-width: 1.5px;
+.link-row a { font-weight: 600; }
+
+/* ── Login Page — slightly stronger presence ── */
+.login-page .card {
+  box-shadow: var(--shadow-lg);
 }
 
 .login-page .form-input {
@@ -562,11 +709,6 @@ strong { font-weight: 700; }
   box-shadow: 0 0 0 3px rgba(241, 199, 232, 0.5);
 }
 
-.login-page .btn--primary {
-  border-width: 1.8px;
-  font-weight: 700;
-}
-
 /* ── Footer ── */
 .app-footer {
   padding: 18px;
@@ -576,7 +718,7 @@ strong { font-weight: 700; }
 
 .app-footer p {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--color-muted);
   letter-spacing: 0.3px;
 }
@@ -586,20 +728,33 @@ strong { font-weight: 700; }
 .match-msg.match { color: var(--color-success); }
 .match-msg.no-match { color: var(--color-danger); }
 
-/* ── Responsive ── */
-@media (max-width: 640px) {
-  .card { padding: 28px 22px; border-radius: var(--radius-md); }
-  .page-header__title { font-size: 1.35rem; }
+/* ── Desktop layout ── */
+@media (min-width: 641px) {
+  .page-wrapper { padding: 32px 20px; }
+  .page-wrapper--top { padding-top: 48px; }
 
-  .table th, .table td { padding: 10px 10px; font-size: 0.78rem; }
+  .card { padding: 40px; border-radius: var(--radius-xl); }
 
-  .actions:not(.actions--center) { flex-direction: column; }
-  .btn { width: 100%; }
-  .table .row-actions { flex-direction: column; gap: 4px; }
-  .table .row-actions .inline-form { width: 100%; }
+  .page-header { margin: -40px -40px 32px; padding: 32px 40px 26px; }
+
+  .actions { flex-direction: row; }
+  .actions--stack { flex-direction: column; }
+  .btn { width: auto; }
+  .btn--full { width: 100%; }
+
+  .table th, .table td { padding: 13px 16px; }
+  .table td { font-size: 0.86rem; }
+  .table .row-actions { flex-direction: row; }
+  .table .row-actions .inline-form { width: auto; }
 }
 
-@media (max-width: 400px) {
-  .card { padding: 22px 18px; }
-  .page-wrapper { padding: 16px 12px; }
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+
+  html { scroll-behavior: auto; }
 }

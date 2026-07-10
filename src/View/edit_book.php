@@ -1,67 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Edit Book - Book Boutique</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
-  <link href="/css/style.css" rel="stylesheet">
-</head>
+<?php $pageTitle = 'Edit Book'; require __DIR__ . '/components/head.php'; ?>
 <body>
-  <div class="page-wrapper">
+  <?php $activeNav = 'books'; require __DIR__ . '/components/header.php'; ?>
+  <main class="page-wrapper" id="main-content" tabindex="-1">
     <div class="card card--md">
 
       <div class="page-header">
         <div class="page-header__icon">
-          <i class="fas fa-edit"></i>
+          <i class="fas fa-edit" aria-hidden="true"></i>
         </div>
         <h1 class="page-header__title">Edit Book</h1>
         <p class="page-header__subtitle">Update book information</p>
       </div>
 
       <?php if (!empty($error)): ?>
-        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-triangle"></i> <?= htmlspecialchars($error) ?></div>
+        <div class="alert alert--danger" role="alert"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i> <?= htmlspecialchars($error) ?></div>
       <?php endif; ?>
 
       <form action="/books/update/<?= (int) $book['id'] ?>" method="post" id="bookForm">
         <input type="hidden" name="csrf_token" value="<?= htmlspecialchars(\Controller\Csrf::token()) ?>">
         <div class="form-group">
-          <label class="form-label" for="title"><i class="fas fa-book"></i> Title *</label>
+          <label class="form-label" for="title"><i class="fas fa-book" aria-hidden="true"></i> Title *</label>
           <input type="text" class="form-input" id="title" name="title" value="<?= htmlspecialchars($book['title']) ?>" minlength="2" maxlength="255" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="author"><i class="fas fa-user"></i> Author *</label>
+          <label class="form-label" for="author"><i class="fas fa-user" aria-hidden="true"></i> Author *</label>
           <input type="text" class="form-input" id="author" name="author" value="<?= htmlspecialchars($book['author']) ?>" minlength="2" maxlength="255" required>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="isbn"><i class="fas fa-barcode"></i> ISBN</label>
+          <label class="form-label" for="isbn"><i class="fas fa-barcode" aria-hidden="true"></i> ISBN</label>
           <input type="text" class="form-input" id="isbn" name="isbn" aria-describedby="isbn-feedback" value="<?= $book['isbn'] ? htmlspecialchars($book['isbn']) : '' ?>">
-          <div class="invalid-feedback" id="isbn-feedback" aria-live="polite" style="display:none;">
+          <div class="invalid-feedback is-hidden" id="isbn-feedback" aria-live="polite">
             Please enter a valid ISBN-10 or ISBN-13 format.
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="published_year"><i class="fas fa-calendar"></i> Published Year</label>
+          <label class="form-label" for="published_year"><i class="fas fa-calendar" aria-hidden="true"></i> Published Year</label>
           <input type="number" class="form-input" id="published_year" name="published_year"
                  value="<?= $book['published_year'] ? htmlspecialchars($book['published_year']) : '' ?>"
                  min="1000" max="<?= date('Y') ?>">
         </div>
 
-        <div class="actions actions--mt">
-          <button type="submit" class="btn btn--success btn--lg" style="flex:1;">
-            <i class="fas fa-save"></i> Update Book
+        <div class="actions actions--mt actions--fill">
+          <button type="submit" class="btn btn--success btn--lg">
+            <i class="fas fa-save" aria-hidden="true"></i> Update Book
           </button>
-          <a href="/books" class="btn btn--secondary btn--lg" style="flex:1;">
-            <i class="fas fa-times"></i> Cancel
+          <a href="/books" class="btn btn--secondary btn--lg">
+            <i class="fas fa-times" aria-hidden="true"></i> Cancel
           </a>
         </div>
       </form>
 
     </div>
-  </div>
+  </main>
 
   <?php include __DIR__ . '/components/footer.php'; ?>
 
@@ -99,7 +92,7 @@
         const v = validateISBN(this.value);
         this.classList.toggle('is-valid', v && this.value.trim() !== '');
         this.classList.toggle('is-invalid', !v);
-        feedback.style.display = v ? 'none' : 'block';
+        feedback.classList.toggle('is-hidden', v);
       });
 
       form.addEventListener('submit', function(e) {
