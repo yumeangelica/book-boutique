@@ -24,7 +24,8 @@
         <div class="form-group">
           <label class="form-label" for="username">Username</label>
           <input type="text" class="form-input" id="username" name="username" placeholder="Choose a username" required
-                 autocomplete="username"
+                 autocomplete="username" minlength="3" maxlength="50" pattern="[A-Za-z0-9_.\-]+"
+                 title="Letters, numbers, dots, hyphens and underscores only"
                  value="<?= isset($_POST['username']) ? htmlspecialchars($_POST['username']) : '' ?>">
         </div>
 

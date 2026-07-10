@@ -23,7 +23,10 @@ class Database
       self::$connection = new mysqli($host, $username, $password, $database);
 
       if (self::$connection->connect_error) {
-        die("Connection failed: " . self::$connection->connect_error);
+        // Log details server-side only; never expose connection internals to the client
+        error_log("Database connection failed: " . self::$connection->connect_error);
+        http_response_code(500);
+        exit('Service temporarily unavailable. Please try again later.');
       }
 
       // Initialize database tables if they don't exist (only once)
@@ -35,6 +38,8 @@ class Database
     return self::$connection;
   }
 
+  // Convenience for the manual (non-Docker) install path; sql/init.sql is the
+  // canonical schema and is used by the Docker MySQL container on first start.
   private static function initializeTables()
   {
     // Create users table if it doesn't exist
