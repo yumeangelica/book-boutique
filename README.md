@@ -2,6 +2,14 @@
 
 A modern PHP web application for personal book collection management with user authentication, responsive design, and practical security features.
 
+## Screenshots
+
+| Desktop | Mobile |
+| --- | --- |
+| ![Login page on desktop](docs/screenshots/login-desktop.png) | ![Dashboard on mobile](docs/screenshots/dashboard-mobile.png) |
+| ![Book collection on desktop](docs/screenshots/books-desktop.png) | ![Book collection on mobile](docs/screenshots/books-mobile.png) |
+|  | ![Add book form on mobile](docs/screenshots/add-book-mobile.png) |
+
 ## Features
 
 ### Book Management
@@ -14,10 +22,11 @@ A modern PHP web application for personal book collection management with user a
 
 ### Security & Authentication
 
-- User registration with strong password requirements
+- User registration with strong password requirements and username format validation
 - Real-time password strength validation
 - Secure password hashing (PHP password_hash)
 - Session ID regeneration after successful login
+- Hardened session cookies (HttpOnly, SameSite=Lax, Secure when served over HTTPS, strict mode)
 - **Password change functionality** with current password verification
 - Account management with secure deletion
 - Password confirmation required for account deletion and password changes
@@ -29,21 +38,30 @@ A modern PHP web application for personal book collection management with user a
 ### User Experience
 
 - Modern, soft card-based design with muted pink theme
-- Fully responsive design (mobile-friendly)
+- Mobile-first responsive layout (base styles target small screens, desktop enhanced via min-width media query)
+- Top navigation bar for signed-in users with current-page indication
 - Interactive user interface with Font Awesome icons
-- Real-time client-side validation
-- Dynamic error and success messaging
-- Intuitive navigation with user account management
-- Visible keyboard focus states for interactive controls
+- Real-time client-side validation (forms also work without JavaScript)
+- Success flash messages after add/update/delete via the post-redirect-get pattern
+- Styled 404 page with a way back into the app
 - Dynamic footer component with automatic copyright year updates
+
+### Accessibility
+
+- Semantic landmarks on every page (`header`, `nav`, `main`, `footer`) plus a skip-to-content link
+- WCAG 2.2 AA color contrast for text and controls
+- Visible keyboard focus states and 44px minimum tap targets
+- Decorative icons hidden from screen readers; live regions announce password requirement progress
+- Data table with column scopes and a screen-reader caption
+- `prefers-reduced-motion` support
 
 ### Password Security
 
 - Minimum 8 characters required
 - Must contain uppercase and lowercase letters
 - Must include numbers and special characters
-- Real-time validation with visual indicators
-- Submit button disabled until requirements met
+- Real-time validation with visual indicators and screen-reader announcements
+- Client-side checks block obviously invalid submissions; the server always re-validates
 - **Secure password change** with current password verification
 - Prevention of password reuse (cannot change to same password)
 
@@ -117,8 +135,9 @@ Database features automatic cascade deletion - when a user account is deleted, a
 - Password strength validation (frontend + backend)
 - Session ID regeneration after login
 - **Current password verification** for password changes and account deletion
-- Session management with proper cleanup
-- Input sanitization and validation
+- Session management with proper cleanup and hardened cookie settings
+- Input sanitization and validation (output escaping relies on PHP 8.1+ `htmlspecialchars` defaults, which include `ENT_QUOTES`)
+- Username format validation at registration (3-50 chars, letters/numbers/dots/hyphens/underscores)
 - Secure password hashing and verification
 - **Prevention of password reuse** during password changes
 
@@ -137,7 +156,7 @@ src/
 ├── Controller/     # Application logic
 ├── Model/         # Data models and database interaction
 └── View/          # UI templates and reusable components
-    ├── components/ # Reusable UI components (footer)
+    ├── components/ # Reusable UI components (head, header/nav, footer)
     └── *.php      # Page templates
 public/            # Web root and routing
 config/            # Application configuration
@@ -223,7 +242,9 @@ docker compose exec -T php sh -lc 'find public config src -name "*.php" -print0 
 - Default demo credentials are provided for local development
 - In production, customize the `.env` file with strong, unique passwords
 - Database credentials are configurable via environment variables
-- CSRF tokens rely on PHP sessions, so production deployments should use HTTPS and secure session cookie settings
+- Session cookies are set with HttpOnly, SameSite=Lax and strict mode; the Secure flag is applied automatically when the app is served over HTTPS (use HTTPS in production)
+- Database connection errors are logged server-side and never exposed to the client
+- No login rate limiting or account lockout — intentionally out of scope for this demo application
 - Never commit real production credentials to version control
 
 ## Manual Installation
@@ -264,8 +285,8 @@ DB_ROOT_PASSWORD=another_very_secure_password
 ### Password Security
 
 - **Strong Password Requirements**: Real-time validation ensures passwords contain uppercase, lowercase, numbers, and special characters
-- **Visual Feedback**: Green checkmarks appear as requirements are met
-- **Submit Protection**: Registration button remains disabled until all requirements are satisfied
+- **Visual Feedback**: Green checkmarks appear as requirements are met, with matching screen-reader announcements
+- **Submit Protection**: Client-side validation blocks invalid submissions and the server re-validates everything
 - **Secure Password Changes**: Current password verification required, prevents password reuse
 - **Interactive Password Change**: Hidden form with real-time validation and confirmation matching
 
@@ -281,10 +302,11 @@ DB_ROOT_PASSWORD=another_very_secure_password
 
 ### Modern UI
 
-- **Responsive Design**: Optimized for desktop, tablet, and mobile devices
+- **Mobile-First Design**: Base styles target small screens; desktop layout is layered on with a single min-width media query
+- **Accessible by Design**: WCAG 2.2 AA contrast, skip link, landmarks, keyboard-friendly controls and reduced-motion support
 - **Interactive Elements**: Hover effects and smooth transitions throughout
-- **Consistent Theming**: Muted pink color palette across all pages
-- **Component Architecture**: Reusable footer component with dynamic year
+- **Consistent Theming**: Muted pink color palette shared with the author's other projects, defined as CSS custom properties
+- **Component Architecture**: Reusable head, header/nav and footer components
 - **Card-Based Layout**: Soft, elevated containers for clear content separation
 
 ## Credits
