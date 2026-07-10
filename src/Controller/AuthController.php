@@ -233,8 +233,9 @@ class AuthController
       $result = User::updatePassword($userId, $newHashedPassword);
 
       if ($result) {
-        $success = "Password successfully changed!";
-        require __DIR__ . '/../View/account.php';
+        // PRG: redirect so a refresh doesn't re-submit the form
+        header('Location: /account?pwchanged=1');
+        exit;
       } else {
         $error = "Failed to update password. Please try again.";
         require __DIR__ . '/../View/account.php';

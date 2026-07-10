@@ -114,6 +114,9 @@ switch ($path) {
       header('Location: /login');
       exit;
     }
+    if (isset($queryParams['pwchanged'])) {
+      $success = "Password successfully changed!";
+    }
     require __DIR__ . '/../src/View/account.php';
     break;
   case '/delete-account':
@@ -144,6 +147,6 @@ switch ($path) {
     break;
   default:
     http_response_code(404);
-    echo '404 Not Found';
+    require __DIR__ . '/../src/View/error_404.php';
     break;
 }

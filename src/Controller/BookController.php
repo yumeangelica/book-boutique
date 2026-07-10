@@ -26,6 +26,14 @@ class BookController
     } elseif (isset($_GET['error']) && $_GET['error'] === 'invalidform') {
       $errorMessage = "Invalid form submission. Please try again.";
     }
+    $successMessage = null;
+    if (isset($_GET['added'])) {
+      $successMessage = "Book added successfully!";
+    } elseif (isset($_GET['updated'])) {
+      $successMessage = "Book updated successfully!";
+    } elseif (isset($_GET['deleted'])) {
+      $successMessage = "Book deleted successfully!";
+    }
     require_once __DIR__ . '/../View/books.php';
   }
 
@@ -58,7 +66,7 @@ class BookController
 
     $result = Book::addBook($title, $author, $validation['isbn'], $validation['publishedYear'], $userId);
     if ($result) {
-      header('Location: /books');
+      header('Location: /books?added=1');
       exit;
     }
 
@@ -81,7 +89,7 @@ class BookController
     }
 
     Book::deleteById($id, $userId);
-    header('Location: /books');
+    header('Location: /books?deleted=1');
     exit;
   }
 
@@ -141,7 +149,7 @@ class BookController
 
     $result = Book::updateById($id, $title, $author, $validation['isbn'], $validation['publishedYear'], $userId);
     if ($result) {
-      header('Location: /books');
+      header('Location: /books?updated=1');
       exit;
     }
 
